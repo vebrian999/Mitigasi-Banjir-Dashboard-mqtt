@@ -1,0 +1,178 @@
+import "./style.css";
+import { setupCounter } from "./counter.js";
+
+document.querySelector("#app").innerHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Dashboard</title>
+    
+</head>
+<body>
+    <div class="bg-green-400 py-4 flex justify-between px-6 text-white ">
+        <h1 class="font-semibold text-2xl">FDD FLOOD MONITORING</h1>
+        <div class="flex justify-normal gap-3">
+            <p class="font-semibold text-2xl" id="today">Today :</p>
+            <h1 class="font-semibold text-2xl" id="clock"></h1>
+        </div>
+    </div>
+
+    <div class="flex flex-col-2 gap-4">
+        <div class="flex flex-col bg-gray-200 h-screen w-1/6 z-40">
+            <ul class="text-sm font-medium mt-8 mr-4 ml-4">
+                <div class="flex gap-x-2 py-3">
+                    <li class="flex items-center">
+                        <img class="w-5" src="./asset/graph.svg" alt="">
+                    </li>
+                    <li>
+                        MONITORING BANJIR
+                    </li>
+                </div>
+                <div class="flex gap-x-2 py-3">
+                    <li>
+                        <img class="w-5" src="./asset/time.svg" alt="">
+                    </li>
+                    <li>
+                        HISTORY
+                    </li>
+                </div>
+            </ul>
+        </div>
+
+
+        <div class="flex w-full justify-between mt-5">
+        <div class="w-1/4 ml-4 font-semibold text-3xl">
+            <h1>Dashboard</h1>
+        </div>
+
+        <div class=" pr-8  mt-48 absolute bg-gray-400">
+            <div class="flex ml-10 mt-4 gap-2">
+                <img src="./asset/graph.svg" alt="">
+                <h1 class="text-white font-semibold text-lg">Grafik Monioring Banjir</h1>
+            </div>
+            <div class="m-4 w-full justify-start">
+                <canvas class="mx-auto bg-white " id="barChart" width="1200" height="400"></canvas>
+            </div>
+        </div>
+
+        <div class="flex flex-col w-1/4 gap-y-3 ">
+            <div class="flex ">
+                <h1 class="flex items-center px-1 font-semibold">Status Saat ini :</h1>
+                <h1 class="bg-red-600 py-2 w-32 text-center text-white">Bahaya</h1>
+            </div>
+            <div class="flex">
+                <h1 class="flex items-center px-1 font-semibold">Tinggi Saat ini :</h1>
+                <h1 class="bg-red-600 py-2 w-32 text-center text-white">370</h1>
+            </div>
+        </div>
+        </div>
+    </div>
+        
+
+
+
+</body>
+
+
+    <script>
+        function updateClock() {
+            var now = new Date();
+            var daysOfWeek = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            var dayOfWeek = daysOfWeek[now.getDay()];
+            var month = months[now.getMonth()];
+            var date = now.getDate();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+            // Mengupdate elemen dengan ID "clock" dengan waktu yang baru
+            document.getElementById("clock").innerHTML = dayOfWeek + ', ' + date + ' ' + month + ' ' + hours + ':' + minutes + ':' + seconds;
+
+            // Menjadwalkan pemanggilan fungsi ini setiap detik
+            setTimeout(updateClock, 1000);
+        }
+
+        // Memanggil fungsi updateClock untuk pertama kalinya
+        updateClock();
+    </script>
+
+    <script>
+        // Data untuk Bar Chart
+        const data = [20, 50, 80, 30, 40];
+
+        // Mengakses elemen canvas
+        const canvas = document.getElementById('barChart');
+        const ctx = canvas.getContext('2d');
+
+        // Menggambar Bar Chart
+        const barWidth = 170;
+        const spacing = 20;
+        const startX = 20;
+        const chartHeight = 250;
+
+        // Menggambar sumbu x
+        ctx.beginPath();
+        ctx.moveTo(startX, chartHeight);
+        ctx.lineTo(startX + (barWidth + spacing) * data.length, chartHeight);
+        ctx.stroke();
+
+        // Menggambar bar
+        for (let i = 0; i < data.length; i++) {
+            const barHeight = data[i];
+            const x = startX + (barWidth + spacing) * i;
+            const y = chartHeight - barHeight;
+
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(x, y, barWidth, barHeight);
+
+            // Menambahkan label nilai di atas setiap bar
+            ctx.fillStyle = 'black';
+            ctx.font = '12px Arial';
+            ctx.fillText(barHeight, x + barWidth / 2 - 10, y - 5);
+        }
+    </script>
+
+    <script>
+    function fetchData() {
+        fetch('getData.php')
+            .then(response => response.json())
+            .then(data => {
+                // Menggunakan data yang diterima untuk menggambar grafik atau elemen HTML lainnya
+                console.log(data);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Memanggil fungsi fetchData untuk pertama kalinya
+    fetchData();
+</script>
+
+</html>
+`;
+
+setupCounter(document.querySelector("#counter"));
+// ...
+
+function fetchData() {
+  fetch("getData.php")
+    .then((response) => response.json())
+    .then((data) => {
+      // Menggunakan data yang diterima untuk menggambar grafik atau elemen HTML lainnya
+      console.log(data);
+
+      // Menampilkan data pada elemen dengan ID "barChart"
+      displayDataInChart(data);
+    })
+    .catch((error) => console.error("Error:", error));
+}
+
+// ...
