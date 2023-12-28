@@ -13,7 +13,7 @@
     <div class="bg-green-600 py-4 flex justify-between px-6 text-white">
         <div class="flex gap-x-4">
         <img class="w-16" src="asset/logoFFD.png" alt="">
-        <h1 class="font-semibold text-2xl">FDD FLOOD MONITORING</h1>
+        <h1 class="font-semibold text-2xl">FFD FLOOD MONITORING</h1>
         </div>
         <div class="flex justify-normal gap-3">
             <p class="font-semibold text-2xl" id="today">Today :</p>
